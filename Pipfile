@@ -10,6 +10,7 @@ flake8 = "*"
 [packages]
 scrapy = "*"
 scrapy-fake-useragent = "*"
+dateparser = "*"
 
 [requires]
 python_version = "3.8"

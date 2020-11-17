@@ -12,6 +12,17 @@ BOT_NAME = 'src'
 SPIDER_MODULES = ['src.spiders']
 NEWSPIDER_MODULE = 'src.spiders'
 
+FEED_FORMAT = "utf-8"
+FEED_EXPORT_FIELDS = [
+    "currency_name",
+    "symbol",
+    "exchange",
+    "transition",
+    "transition_pln",
+    "date",
+    "source",
+    "source_url"
+]
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = """
@@ -80,6 +91,7 @@ FAKEUSERAGENT_FALLBACK = USER_AGENT
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'src.pipelines.DefaultValuesPipeline': 300,
+   'src.pipelines.DatePipeline': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

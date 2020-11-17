@@ -1,12 +1,12 @@
-# Define here the models for your scraped items
-#
-# See documentation in:
-# https://docs.scrapy.org/en/latest/topics/items.html
-
-import scrapy
+from scrapy import Item, Field
 
 
-class SrcItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class CurrencyItem(Item):
+    currency_name = Field()
+    symbol = Field()
+    exchange = Field()
+    transition = Field()
+    transition_pln = Field()
+    source = Field()
+    source_url = Field()
+    date = Field()

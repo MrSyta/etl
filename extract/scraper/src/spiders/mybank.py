@@ -12,7 +12,7 @@ class MybankKursyWalutSpider(Spider):
         yield Request(self.url, self.parse)
 
     def parse(self, response):
-        table_rows = response.css(".tab_kursy tr")[1:]
+        table_rows = response.css(".tab_kursy tr:not([class])")[1:]
         for row in table_rows:
             loader = CurrencyItemLoader(item=CurrencyItem(), response=response)
             loader.add_value('currency_name', row.css("td")[0].css("a::text").get())

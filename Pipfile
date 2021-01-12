@@ -12,6 +12,7 @@ scrapy = "*"
 scrapy-fake-useragent = "*"
 dateparser = "*"
 pymongo = "*"
+flask = "*"
 
 [requires]
 python_version = "3.8"

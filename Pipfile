@@ -8,11 +8,10 @@ pylint = "*"
 flake8 = "*"
 
 [packages]
-scrapy = "*"
-scrapy-fake-useragent = "*"
-dateparser = "*"
 pymongo = "*"
 flask = "*"
+beautifulsoup4 = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"

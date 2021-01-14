@@ -12,6 +12,8 @@ pymongo = "*"
 flask = "*"
 beautifulsoup4 = "*"
 requests = "*"
+flask-restful = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"

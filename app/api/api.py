@@ -94,32 +94,26 @@ api.add_resource(Transform, '/transform/')
 
 
 class Load(Resource):
-    @staticmethod
-    def connect():
-        client = pymongo.MongoClient()
-        db = client["etl"]
-        collection = db["currencies"]
-        return client, collection
-
     def load(self):
-        client, collection = Load.connect()
+        client, collection = Currencies.connect()
 
         with open('transformed_data.json') as file:
             data = json.load(file)
 
-        duplicate_rows = 0
-        rows = 0
+        loaded_data = []
         for currency in data:
             try:
                 collection.insert_one(currency)
-                rows += 1
+                loaded_data.append(currency)
             except pymongo.errors.DuplicateKeyError:
-                duplicate_rows += 1
                 continue
 
         client.close()
 
-        return Currencies.remove_id_fields(data), rows, duplicate_rows
+        new_rows = len(loaded_data)
+        duplicate_rows = len(data) - new_rows
+
+        return loaded_data, new_rows, duplicate_rows
 
     @staticmethod
     def remove_files():
@@ -128,33 +122,42 @@ class Load(Resource):
 
     def get(self):
         try:
-            data, rows, duplicate_rows = self.load()
+            loaded_data, new_rows, duplicate_rows = self.load()
             success = True
-            msg = f"Dane zostały pomyślnie zapisane w bazie danych. Zapisano {rows} rekordów, " \
+            msg = f"Dane zostały pomyślnie zapisane w bazie danych. Zapisano {new_rows} rekordów, " \
                   f"odrzucono {duplicate_rows} duplikatów."
             Load.remove_files()
         except Exception:
             success = False
             msg = "Wystąpił błąd podczas zapisywania danych do bazy danych."
         finally:
-            return {"data": data, "msg": msg, "success": success}
+            return {"data": loaded_data, "msg": msg, "success": success}
 
 
 api.add_resource(Load, '/load/')
 
 
 class Currencies(Resource):
-    def get_data(self):
-        client, collection = Load.connect()
-        data = Currencies.remove_id_fields(list(collection.find()))
-
-        client.close()
-
-        return data
+    @staticmethod
+    def connect():
+        client = pymongo.MongoClient()
+        db = client["etl"]
+        collection = db["currencies"]
+        return client, collection
 
     def get(self):
-        data = self.get_data()
+        client, collection = Currencies.connect()
+        data = Currencies.remove_id_fields(list(collection.find()))
+        client.close()
+
         return {"data": data}
+
+    def delete(self):
+        client, collection = Currencies.connect()
+        collection.delete_many({})
+        client.close()
+
+        return None, 204
 
     @staticmethod
     def remove_id_fields(currencies):
